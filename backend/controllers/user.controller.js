@@ -56,6 +56,8 @@ export const login = async (req, res) => {
         });
     }
 
+
+
     const isPassword = await bcrypt.compare(password, user.password);
     if (!isPassword) {
         return res.status(401).json({
@@ -63,6 +65,8 @@ export const login = async (req, res) => {
             success: false,
         });
     }
+
+
 
     user = {
         _id: user._id,
@@ -74,20 +78,19 @@ export const login = async (req, res) => {
         following: user.following,
         posts: user.posts,
     };
-
     const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-        expiresIn: "id",
+        expiresIn: '1d',
     });
-    return res
-        .cookie("token", token, {
+
+
+    return res.cookie("token", token, {
             httpOnly: true,
             sameSite: "strict",
             maxAge: 1 * 24 * 60 * 60 * 1000,
-        })
-        .json({
+        }).status(201).json({
             message: `Welcome Back ${user.username}`,
             success: true,
-            user,
+            user
         });
 };
 
@@ -105,12 +108,14 @@ export const logout = async (_, res) => {
 
 export const getProfile = async (req, res) => {
     try {
-        const userId = req.params.id;
-        let user = await User.findById({ userId });
+        const userId = req.params.id;        
+        let user = await User.findById(userId).select("-password");
+        if(!user){
+            return res.status(400).json({ success: false , message:"ID not found"})
+        }
         return res.status(200).json({ user, success: true })
     } catch (error) {
         console.log(error);
-
     }
 }
 

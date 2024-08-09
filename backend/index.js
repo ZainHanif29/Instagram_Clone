@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./utils/db.js";
+import userRoute from './routes/user.routes.js'
 dotenv.config();
 
 const app = express();
@@ -19,12 +20,14 @@ app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
-app.get("/", (req, res) => {
-  return res.status(200).json({
-    message: "Server is running",
-    success: true,
-  });
-});
+app.use('/api/v1/user',userRoute)
+
+// app.get("/", (req, res) => {
+//   return res.status(200).json({
+//     message: "Server is running",
+//     success: true,
+//   });
+// });
 
 app.listen(PORT, () => {
   connectDB();
