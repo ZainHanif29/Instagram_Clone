@@ -16,8 +16,9 @@ export const register = async (req, res) => {
             });
         }
 
-        const user = await User.findOne({ email });
-        if (user) {
+        const userEmail = await User.findOne({ email });
+        const userName = await User.findOne({ username });
+        if (userName || userEmail) {
             return res.status(401).json({
                 message: "Try different email!",
                 success: false,
