@@ -11,42 +11,50 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
-const sideBarItems = [
-    { Icon: <Home />, text: "Home" },
-    { Icon: <Search />, text: "Search" },
-    { Icon: <TrendingUp />, text: "Explore" },
-    { Icon: <MessageCircle />, text: "Messages" },
-    { Icon: <Heart />, text: "Notification" },
-    { Icon: <PlusSquare />, text: "Create" },
-    {
-        Icon: (
-            <Avatar className="w-6 h-6">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-        ),
-        text: "Profile",
-    },
-    { Icon: <LogOut />, text: "Logout" },
-];
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
-const sideBarHandler = (textType) => {
-    if (textType === "Logout") logoutHandler();
-};
-const logoutHandler = async () => {
-    try {
-        const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
-            withCredentials: true,
-        });
-        if (res.data.success) {
-            toast.success(res.data.message);
-        }
-    } catch (error) {
-        toast.error(error.response.data.message);
-    }
-};
+
+
 
 const LeftSideBar = () => {
+    const dispatch = useDispatch();
+
+    const sideBarItems = [
+        { Icon: <Home />, text: "Home" },
+        { Icon: <Search />, text: "Search" },
+        { Icon: <TrendingUp />, text: "Explore" },
+        { Icon: <MessageCircle />, text: "Messages" },
+        { Icon: <Heart />, text: "Notification" },
+        { Icon: <PlusSquare />, text: "Create" },
+        {
+            Icon: (
+                <Avatar className="w-6 h-6">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+            ),
+            text: "Profile",
+        },
+        { Icon: <LogOut />, text: "Logout" },
+    ];
+    const sideBarHandler = (textType) => {
+        if (textType === "Logout") logoutHandler();
+    };
+    const logoutHandler = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
+                withCredentials: true,
+            });
+            if (res.data.success) {
+                dispatch(setAuthUser(null))
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'An error occurred during logout.';
+            toast.error(errorMessage);
+        }
+    };
     return (
         <>
             <div className="fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen">
