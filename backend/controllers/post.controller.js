@@ -11,13 +11,12 @@ export const addPost = async (req, res) => {
 
         if (!image) return res.status(401).json({ message: 'Image required!', success: false });
 
-
         // Image upload
         const optimizedImage = await sharp(image.buffer).resize({ width: 800, height: 800, fit: 'fill' }).toFormat('jpeg', { quality: 80 }).toBuffer();
 
         // buffer to data uri
         const fileUri = `data:image/jpeg;base64,${optimizedImage.toString('base64')}`;
-        const cloudResponse = await cloudinary.uploader(fileUri);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri);
         const post = await Post.create({
             caption, image: cloudResponse.secure_url, author: authorID
         });
@@ -141,31 +140,31 @@ export const addComment = async (req, res) => {
     }
 }
 
-export const getCommentsOfPost = async (req,res) => {
+export const getCommentsOfPost = async (req, res) => {
     try {
         const postId = req.params.id;
 
-        const comments = await Comment.find({post:postId}).populate('author', 'username profilePicture');
+        const comments = await Comment.find({ post: postId }).populate('author', 'username profilePicture');
 
-        if(!comments) return res.status(404).json({message:'No comments found for this post', success:false});
+        if (!comments) return res.status(404).json({ message: 'No comments found for this post', success: false });
 
-        return res.status(200).json({success:true,comments});
+        return res.status(200).json({ success: true, comments });
 
     } catch (error) {
         console.log(error);
     }
 }
 
-export const deletePost = async (req,res) => {
+export const deletePost = async (req, res) => {
     try {
         const postId = req.params.id;
         const authorId = req.id;
 
         const post = await Post.findById(postId);
-        if(!post) return res.status(404).json({message:'Post not found', success:false});
+        if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
         // check if the logged-in user is the owner of the post
-        if(post.author.toString() !== authorId) return res.status(403).json({message:'Unauthorized'});
+        if (post.author.toString() !== authorId) return res.status(403).json({ message: 'Unauthorized' });
 
         // delete post
         await Post.findByIdAndDelete(postId);
@@ -176,11 +175,11 @@ export const deletePost = async (req,res) => {
         await user.save();
 
         // delete associated comments
-        await Comment.deleteMany({post:postId});
+        await Comment.deleteMany({ post: postId });
 
         return res.status(200).json({
-            success:true,
-            message:'Post deleted'
+            success: true,
+            message: 'Post deleted'
         })
 
     } catch (error) {
@@ -188,25 +187,25 @@ export const deletePost = async (req,res) => {
     }
 }
 
-export const bookmarkPost = async (req,res) => {
+export const bookmarkPost = async (req, res) => {
     try {
         const postId = req.params.id;
         const authorId = req.id;
         const post = await Post.findById(postId);
-        if(!post) return res.status(404).json({message:'Post not found', success:false});
-        
-        const user = await User.findById(authorId);
-        if(user.bookmarks.includes(post._id)){
-            // already bookmarked -> remove from the bookmark
-            await user.updateOne({$pull:{bookmarks:post._id}});
-            await user.save();
-            return res.status(200).json({type:'unsaved', message:'Post removed from bookmark', success:true});
+        if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
-        }else{
-            // bookmark krna pdega
-            await user.updateOne({$addToSet:{bookmarks:post._id}});
+        const user = await User.findById(authorId);
+        if (user.bookmarks.includes(post._id)) {
+            // already bookmarked -> remove from the bookmark
+            await user.updateOne({ $pull: { bookmarks: post._id } });
             await user.save();
-            return res.status(200).json({type:'saved', message:'Post bookmarked', success:true});
+            return res.status(200).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true });
+
+        } else {
+            // bookmark krna pdega
+            await user.updateOne({ $addToSet: { bookmarks: post._id } });
+            await user.save();
+            return res.status(200).json({ type: 'saved', message: 'Post bookmarked', success: true });
         }
 
     } catch (error) {

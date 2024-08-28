@@ -1,23 +1,14 @@
-import {
-    Heart,
-    Home,
-    LogOut,
-    MessageCircle,
-    PlusSquare,
-    Search,
-    TrendingUp,
-} from "lucide-react";
-import React from "react";
+import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp } from "lucide-react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
-
-
-
+import CreatePost from "./CreatePost";
 
 const LeftSideBar = () => {
+    const [open, setOpen] = useState(false)
     const dispatch = useDispatch();
 
     const sideBarItems = [
@@ -39,7 +30,15 @@ const LeftSideBar = () => {
         { Icon: <LogOut />, text: "Logout" },
     ];
     const sideBarHandler = (textType) => {
-        if (textType === "Logout") logoutHandler();
+        if (textType === "Logout") {
+            logoutHandler();
+        } else if (textType == "Create") {
+            setOpen(true)
+        } else {
+            console.log(textType);
+            toast.success(textType)
+
+        }
     };
     const logoutHandler = async () => {
         try {
@@ -73,6 +72,7 @@ const LeftSideBar = () => {
                         );
                     })}
                 </div>
+                <CreatePost open={open} setOpen={setOpen} />
             </div>
         </>
     );
