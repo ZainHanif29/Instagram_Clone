@@ -6,6 +6,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
 
 const LeftSideBar = () => {
     const [open, setOpen] = useState(false)
@@ -47,6 +48,8 @@ const LeftSideBar = () => {
             });
             if (res.data.success) {
                 dispatch(setAuthUser(null))
+                dispatch(setSelectedPost(null))
+                dispatch(setPosts([]))
                 toast.success(res.data.message);
             }
         } catch (error) {

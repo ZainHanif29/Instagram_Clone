@@ -131,7 +131,9 @@ export const addComment = async (req, res) => {
 
         const comment = await Comment.create({
             text, author: userID, post: postID
-        }).populate({
+        });
+
+        await comment.populate({
             path: 'author',
             select: 'username profilePicture'
         });
@@ -151,6 +153,8 @@ export const addComment = async (req, res) => {
 export const getCommentsOfPost = async (req, res) => {
     try {
         const postId = req.params.id;
+        console.log(postId);
+        
 
         const comments = await Comment.find({ post: postId }).populate('author', 'username profilePicture');
 
