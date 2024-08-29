@@ -88,6 +88,10 @@ export const likePost = async (req, res) => {
 
         await post.updateOne({ $addToSet: { likes: userID } });
         await post.save();
+        return res.status(200).json({
+            success: true,
+            message: "Post Liked"
+        })
         // socket io
     } catch (error) {
         console.log(error);
@@ -104,6 +108,10 @@ export const dislikePost = async (req, res) => {
 
         await post.updateOne({ $pull: { likes: userID } });
         await post.save();
+        return res.status(200).json({
+            success: true,
+            message: "Post disLiked"
+        })
         // socket io
     } catch (error) {
         console.log(error);
