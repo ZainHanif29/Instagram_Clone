@@ -62,7 +62,7 @@ const CommentDialog = ({ open, setOpen }) => {
                   <Link>
                     <Avatar>
                       <AvatarImage src={selectedPost?.author?.profilePicture} alt="post_img" />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback>{selectedPost?.author?.username[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </Link>
                   <div className="">
@@ -84,11 +84,11 @@ const CommentDialog = ({ open, setOpen }) => {
               <div className="flex-1 overflow-y-auto max-h-96 p-4">
                 {
                   selectedPost?.comments.map((comment)=>(
-                    <Comment key={comment._id} comment={comment} />
+                    <Comment key={comment?._id} comment={comment} />
                   ))
                 }
 
-                <div>{selectedPost.comments.text}</div>
+                <div>{selectedPost?.comments?.text}</div>
               </div>
               <div className="p-4">
                 <div className="flex items-center gap-2">

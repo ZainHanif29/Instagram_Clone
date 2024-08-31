@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader } from './ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
@@ -16,7 +16,7 @@ const CreatePost = ({ open, setOpen }) => {
   const [caption, setCaption] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
-  const {user} = useSelector(store=>store.auth);
+  const { user } = useSelector(store => store.auth);
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files?.[0];
@@ -53,7 +53,8 @@ const CreatePost = ({ open, setOpen }) => {
     <div className="">
       <Dialog open={open}>
         <DialogContent onInteractOutside={() => setOpen(false)}>
-          <DialogHeader className="text-center font-semibold">create new post</DialogHeader>
+          {/* <DialogHeader className="text-center font-semibold">create new post</DialogHeader> */}
+          <DialogTitle className="text-center font-semibold">create new post</DialogTitle>
           <div className="flex gap-3 items-center">
             <Avatar>
               <AvatarImage src="" alt="post img" />
@@ -64,25 +65,28 @@ const CreatePost = ({ open, setOpen }) => {
               <span className='text-gray-600 text-xs'>Bio here...</span>
             </div>
           </div>
-          <Textarea value={caption} onChange={(e) => setCaption(e.target.value)} className="focus-visible:ring-transparent border-none" placeholder="Write a caption..." />
-          {
-            imagePreview && (
-              <div className='w-full h-64 flex items-center justify-center'>
-                <img src={imagePreview} alt='post img' className='object-cover h-full w-full rounded-md' />
-              </div>
-            )
-          }
-          <input ref={imgRef} type="file" className='hidden' onChange={fileChangeHandler} />
-          <Button onClick={() => imgRef.current.click()} className="capitalize w-fit mx-auto">select from the computer</Button>
-          {
-            imagePreview && (
-              loading ? (
-                <Button><Loader2 className="animate-spin mr-2 h-4 w-4" />Please wait</Button>
-              ) : (
-                <Button type="submit" onClick={createPostHandler}>Post</Button>
+          <DialogDescription className='flex flex-col'>
+            <Textarea value={caption} onChange={(e) => setCaption(e.target.value)} className="focus-visible:ring-transparent border-none" placeholder="Write a caption..." />
+            {
+              imagePreview && (
+                <div className='w-full h-64 flex items-center justify-center'>
+                  <img src={imagePreview} alt='post img' className='object-cover h-full w-full rounded-md' />
+                </div>
               )
-            )
-          }
+            }
+            <input ref={imgRef} type="file" className='hidden' onChange={fileChangeHandler} />
+            <Button onClick={() => imgRef.current.click()} className="capitalize w-fit mx-auto mt-3">select from the computer</Button>
+            {
+              imagePreview && (
+                loading ? (
+                  <Button><Loader2 className="animate-spin mr-2 h-4 w-4" />Please wait</Button>
+                ) : (
+                  <Button type="submit" onClick={createPostHandler} className="capitalize w-fit mx-auto mt-3">Post</Button>
+                )
+              )
+            }
+          </DialogDescription>
+
         </DialogContent>
       </Dialog>
     </div>

@@ -119,10 +119,10 @@ const Post = ({ post }) => {
           <div className="flex items-center gap-2">
             <Avatar>
               <AvatarImage
-                src="https://avatar.iran.liara.run/public/boy"
-                alt="post_img"
+                // src="https://avatar.iran.liara.run/public/boy"
+                // alt="post_img"
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>{post.author.username[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <h1>{post.author.username}</h1>
           </div>

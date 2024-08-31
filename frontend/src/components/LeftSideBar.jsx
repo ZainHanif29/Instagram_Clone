@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
+import { useNavigate } from "react-router-dom";
+import store from "@/redux/store";
 
 const LeftSideBar = () => {
     const [open, setOpen] = useState(false)
     const dispatch = useDispatch();
+    const navigation = useNavigate();
+    const {user} = useSelector(store=>store.auth)
 
     const sideBarItems = [
         { Icon: <Home />, text: "Home" },
@@ -22,8 +26,8 @@ const LeftSideBar = () => {
         {
             Icon: (
                 <Avatar className="w-6 h-6">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage  />
+                    <AvatarFallback>{user?.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
             ),
             text: "Profile",
@@ -35,6 +39,10 @@ const LeftSideBar = () => {
             logoutHandler();
         } else if (textType == "Create") {
             setOpen(true)
+        } else if (textType == "Profile") {
+            navigation(`/profile/${user?._id}`)
+        } else if (textType == "Home") {
+            navigation(`/`)
         } else {
             console.log(textType);
             toast.success(textType)
@@ -48,8 +56,11 @@ const LeftSideBar = () => {
             });
             if (res.data.success) {
                 dispatch(setAuthUser(null))
-                dispatch(setSelectedPost(null))
+                dispatch(setSuggestedUser([]))
+                dispatch(setUserProfile(null))
                 dispatch(setPosts([]))
+                dispatch(setSelectedPost(null))
+                navigation('/login')
                 toast.success(res.data.message);
             }
         } catch (error) {
