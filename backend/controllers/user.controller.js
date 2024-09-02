@@ -132,15 +132,17 @@ export const getProfile = async (req, res) => {
 }
 
 export const editProfile = async (req, res) => {
+    console.log(1);
+    
     try {
         const userID = req.id;
         const { bio, gender } = req.body;
         const profilePicture = req.file;
-        let cloudResponse;
-        if (profilePicture) {
-            const fileUri = getDataUri(profilePicture)
-            cloudResponse = await cloudinary.uploader.upload(fileUri)
-        }
+        // let cloudResponse;
+        // if (profilePicture) {
+        //     const fileUri = getDataUri(profilePicture)
+        //     cloudResponse = await cloudinary.uploader.upload(fileUri)
+        // }
 
         const user = await User.findById(userID)
         if(!user){
@@ -151,7 +153,7 @@ export const editProfile = async (req, res) => {
         }
         if(bio) user.bio = bio;
         if(gender) user.gender = gender;
-        if(profilePicture) user.profilePicture = cloudResponse.secure_url;
+        // if(profilePicture) user.profilePicture = cloudResponse.secure_url;
 
         await user.save();
         return res.status(201).json({

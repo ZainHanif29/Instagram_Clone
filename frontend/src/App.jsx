@@ -5,6 +5,7 @@ import MainLayout from "./components/MainLayout";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import EditProfile from "./components/EditProfile";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const BrowserRouter = createBrowserRouter([
       {
         path: '/profile/:id',
         element: <Profile />
+      },
+      {
+        path: '/account/edit',
+        element: <EditProfile />
       },
     ]
   },
