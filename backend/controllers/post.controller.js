@@ -60,7 +60,7 @@ export const getAllPost = async (req, res) => {
 export const getUserPost = async (req, res) => {
     try {
         const authorID = req.id;
-        const posts = await Post.find({ _id: authorID }).sort({ createdAt: -1 })
+        const posts = await Post.find({ author: authorID }).sort({ createdAt: -1 })
             .populate({ path: 'author', select: 'username profilePicture' })
             .populate({
                 path: 'comments',
@@ -143,7 +143,8 @@ export const addComment = async (req, res) => {
 
         return res.status(201).json({
             message: 'Comment Added',
-            success: true
+            success: true,
+            comment
         })
     } catch (error) {
         console.log(error);
@@ -153,9 +154,7 @@ export const addComment = async (req, res) => {
 export const getCommentsOfPost = async (req, res) => {
     try {
         const postId = req.params.id;
-        console.log(postId);
-        
-
+    
         const comments = await Comment.find({ post: postId }).populate('author', 'username profilePicture');
 
         if (!comments) return res.status(404).json({ message: 'No comments found for this post', success: false });

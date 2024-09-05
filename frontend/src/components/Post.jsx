@@ -122,9 +122,9 @@ const Post = ({ post }) => {
                 // src="https://avatar.iran.liara.run/public/boy"
                 // alt="post_img"
               />
-              <AvatarFallback>{post.author.username[0].toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{post?.author?.username[0].toUpperCase()}</AvatarFallback>
             </Avatar>
-            <h1>{post.author.username}</h1>
+            <h1>{post?.author?.username}</h1>
           </div>
           <Dialog>
             <DialogTrigger asChild>
@@ -140,7 +140,7 @@ const Post = ({ post }) => {
               <Button variant="Gost" className="cursor-pointer w-fit">
                 Add to favorities
               </Button>
-              {user && user._id == post.author._id && (
+              {user && user?._id == post?.author?._id && (
                 <Button
                   onClick={deletePost}
                   variant="Gost"
@@ -153,7 +153,7 @@ const Post = ({ post }) => {
           </Dialog>
         </div>
         <img
-          src={post.image}
+          src={post?.image}
           alt="pic"
           className="rounded-sm my-2 w-full aspect-square object-cover"
         />
@@ -183,8 +183,8 @@ const Post = ({ post }) => {
         </div>
         <span className="font-medium block mb-2">{postLike} Likes</span>
         <p>
-          <span className="font-medium mr-2">{post.author.username}</span>
-          {post.caption}
+          <span className="font-medium mr-2">{post?.author?.username}</span>
+          {post?.caption}
         </p>
         <span
           onClick={() => {
@@ -193,7 +193,7 @@ const Post = ({ post }) => {
           }}
           className="cursor-pointer text-sm text-gray-400"
         >
-          View all {comment.length} comments
+          View all {comment?.length} comments
         </span>
         <CommentDialog open={open} setOpen={setOpen} />
         <div className="flex">

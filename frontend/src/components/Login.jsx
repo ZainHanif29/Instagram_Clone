@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import axios from "axios";
@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { setAuthUser } from "@/redux/authSlice";
+import { setAuthUser, setSelectedUser, setSuggestedUser, setUserProfile } from "@/redux/authSlice";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -31,6 +32,7 @@ const Login = () => {
       });
 
       if (res.data.success) {
+        
         toast.success(res.data.message)
         dispatch(setAuthUser(res.data.user))
         setInput({
@@ -46,6 +48,15 @@ const Login = () => {
     }
 
   };
+
+  useEffect(()=>{
+    dispatch(setSuggestedUser(null))
+    dispatch(setUserProfile(null))
+    dispatch(setPosts(null))
+    dispatch(setSelectedPost(null))
+    dispatch(setSelectedUser(null))
+    dispatch(setAuthUser(null))
+  });
   return (
     <>
       <div className="flex items-center w-screen h-screen justify-center">

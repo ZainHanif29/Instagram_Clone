@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthUser } from "@/redux/authSlice";
+import { setAuthUser, setSuggestedUser, setUserProfile } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const LeftSideBar = () => {
     const [open, setOpen] = useState(false)
     const dispatch = useDispatch();
     const navigation = useNavigate();
-    const {user} = useSelector(store=>store.auth)
+    const { user } = useSelector(store => store.auth)
 
     const sideBarItems = [
         { Icon: <Home />, text: "Home" },
@@ -26,7 +26,7 @@ const LeftSideBar = () => {
         {
             Icon: (
                 <Avatar className="w-6 h-6">
-                    <AvatarImage  />
+                    <AvatarImage />
                     <AvatarFallback>{user?.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
             ),
@@ -50,22 +50,23 @@ const LeftSideBar = () => {
         }
     };
     const logoutHandler = async () => {
+        
         try {
             const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
                 withCredentials: true,
             });
             if (res.data.success) {
-                dispatch(setAuthUser(null))
-                dispatch(setSuggestedUser([]))
+                dispatch(setSuggestedUser(null))
                 dispatch(setUserProfile(null))
-                dispatch(setPosts([]))
+                dispatch(setPosts(null))
                 dispatch(setSelectedPost(null))
+                dispatch(setAuthUser(null))
                 navigation('/login')
                 toast.success(res.data.message);
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'An error occurred during logout.';
-            toast.error(errorMessage);
+            toast.error(errorMessage);            
         }
     };
     return (
